@@ -1,0 +1,140 @@
+package com.dummyApp.controller;
+
+import com.dummyApp.model.Product;
+import com.dummyApp.model.ProductDetails;
+import com.dummyApp.service.ProductService;
+import com.sun.org.apache.xpath.internal.operations.Mod;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+@Controller
+public class ProductController {
+
+    // inject product service
+    @Autowired
+    ProductService productService;
+
+// get all products to show in showpage
+    @GetMapping("/")
+    public String showAll(Model model){
+
+        // get list of product
+        List<Product> products=  productService.getAllProducts();
+        // add all to model and send into to homepage to show result;
+        model.addAttribute("products",products);
+        return "homePage";
+    }
+
+    // get all products to show in showpage
+    @GetMapping("/showDetails")
+    public String showDetails(@RequestParam("id") int productId,Model model){
+
+        // get object by product id
+        Product product=productService.findById(productId);
+        ProductDetails productDetails= product.getProductDetails();
+        // throw product details into model
+        model.addAttribute("productDetails",productDetails);
+        return "viewDetails";
+    }
+// to update products
+    @GetMapping("/updateDetails")
+    public String  update(@RequestParam("id") int id,Model model){
+
+        // get object by product id
+        Product product=productService.findById(id);
+        ProductDetails productDetails= product.getProductDetails();
+        // throw product details into model
+        model.addAttribute("productDetails",productDetails);
+        return "updateProducts";
+    }
+
+
+    @PostMapping("/processUpdateDetails")
+    public String  update(@Valid @ModelAttribute("productDetails") ProductDetails productDetails, BindingResult bindingResult, Model model){
+
+        if(bindingResult.hasErrors()){
+            return "updateProducts";
+        }
+
+         // update product
+         productService.update(productDetails);
+        // get list of product
+        List<Product> products=  productService.getAllProducts();
+        // add all to model and send into to homepage to show result;
+        model.addAttribute("products",products);
+         // you should sent the details after updated into home page
+        return "redirect:/";
+    }
+
+    // add product
+    @GetMapping("/addProduct")
+    public String addProduct(Model model){
+
+        // send product details
+        ProductDetails productDetails=new ProductDetails();
+        model.addAttribute("productDetails",productDetails);
+
+        return "addProduct";
+    }
+
+    // process add product
+    @PostMapping("/processAddProduct")
+    public String processAddProduct(@Valid @ModelAttribute("productDetails") ProductDetails productDetails, BindingResult bindingResult, Model model){
+
+        if(bindingResult.hasErrors()){
+            return "addProduct";
+        }
+        // add product details into database
+        productService.insert(productDetails);
+        List<Product> products=productService.getAllProducts();
+        model.addAttribute("products",products);
+        return "redirect:/";
+    }
+
+    // delete products
+    @GetMapping("/deleteProduct")
+    public String processDeleteProduct(@RequestParam("id") int id){
+
+        // delete all products
+        productService.deleteById(id);
+
+        return "redirect:/";
+    }
+
+    // search by name
+    @GetMapping("/searchProduct")
+    public String getAlldetails(@RequestParam("name") String name, Model model){
+
+       List<Product> products=  productService.search(name);
+        model.addAttribute("products",products);
+
+        return "homePage";
+    }
+
+    // to control date before user check it
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("mm/dd/yyyy");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+    }
+
+
+    @InitBinder
+    public void removeWhiteSpaces(WebDataBinder dataBinder){
+
+        // define object of trimer
+        StringTrimmerEditor trimmerEditor= new StringTrimmerEditor(true);
+        dataBinder.registerCustomEditor(String.class,trimmerEditor);
+    }
+}
