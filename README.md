@@ -30,11 +30,13 @@ To add a new product to the system:
 
 1. Open your web browser and go to the application URL :  http://localhost:8080/addProduct  
 in backend : after clicking the button add product the request send to the controller which handle bussiness logic for insertion on product and go to dao layer and save product into database
+![GitHub Logo](/images/addProduct.png)
+
 ### Read (View)
 
 To view details of a product:
    The home page is reached by going to the link: http://localhost:8080/viewDetails
- ![GitHub Logo](/images/list_of_products.png)
+ ![GitHub Logo](/images/viewDetails.png)
  
 
   
@@ -43,7 +45,7 @@ To view details of a product:
 To update the details of an existing product:
 
 1. The home page is reached by going to the link: http://localhost:8080/updateProduct
-![GitHub Logo](/images/list_of_products.png)
+![GitHub Logo](/images/updateProducts.png)
 
 ### Delete
 
