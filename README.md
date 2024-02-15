@@ -77,9 +77,14 @@ If applicable, the project uses the following database schema for CRUD operation
  hib is the schema of myDataBase
 
  
-[name: abdullah hamada abd Elsalam]
-[email : Abdullahhamada100@gmail.com]
-[phone number : +20 01067343329 ]
+## Contact Information
+
+For questions or collaboration opportunities, feel free to reach out:
+
+- Name : Abdullah hamada Abd ElSalam
+- email : Abdullahhamada100@gmail.com
+-  phone : +20 0106-734-3329
+ 
  
 
 
